@@ -4,7 +4,11 @@ Train and compare six classifiers for recognizing handwritten digits **0–9** f
 
 The **convolutional neural network (CNN)** achieved the highest recorded accuracy at **98.31%** in the notebook comparison.
 
-## Dashboard
+[Dashboard](#dashboard) · [Quick Start](#quick-start) · [Dataset](#dataset) · [Results](#results) · [Notebooks](#notebooks)
+
+<a name="dashboard"></a>
+
+## 🖊️ Interactive Dashboard
 
 | Page | What you can do |
 | --- | --- |
@@ -14,13 +18,18 @@ The **convolutional neural network (CNN)** achieved the highest recorded accurac
 | **Models** | Check which models loaded and inspect their files and configuration. |
 | **Dataset** | Explore sample images, pixel statistics, and the average image from `test.csv`. |
 
-## Run locally
+<a name="quick-start"></a>
+
+## 🚀 Quick Start
 
 Use **Python 3.11** for the setup below. Open a terminal in the extracted project folder, where `requirements.txt` is located.
 
 ```bash
 python -m venv .venv
 ```
+
+<details>
+<summary><strong>Activation commands for Windows, macOS, and Linux</strong></summary>
 
 Activate the environment using the command for your shell.
 
@@ -30,9 +39,14 @@ Activate the environment using the command for your shell.
 | Windows Command Prompt | `.venv\Scripts\activate.bat` |
 | macOS or Linux | `source .venv/bin/activate` |
 
+</details>
+
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+<details open>
+<summary><strong>Place the dataset and model files</strong></summary>
 
 The project ZIP already includes the CSVs and trained models. The Git ignore rules exclude those files, so for a fresh clone, copy them from the ZIP into these locations before running a demo.
 
@@ -45,6 +59,8 @@ The project ZIP already includes the CSVs and trained models. The Git ignore rul
 | `models/svm_digit_model.pkl` | SVM predictions |
 | `models/knn_digit_model.pkl` | kNN predictions |
 
+</details>
+
 Start the server and open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 ```bash
@@ -53,13 +69,19 @@ python -m app.app
 
 Try drawing a single digit in **Predict**. The 28 × 28 preview shows the input passed to the models. Check **Models** for load errors. If a saved scikit-learn model fails to load because of a version mismatch, use the scikit-learn version that saved it or retrain it in the current environment.
 
-## Dataset and preprocessing
+<a name="dataset"></a>
+
+## 📂 Dataset and Preprocessing
+
+**Dataset source** · [Handwritten Digit Recognition on Kaggle by Bhavik Jikadara](https://www.kaggle.com/datasets/bhavikjikadara/handwritten-digit-recognition)
 
 Each MNIST image has **784 grayscale pixels** with values from **0 to 255**. The training CSV includes a `label` column. The test CSV provides unlabeled examples for prediction. The training and evaluation scripts create a stratified **80/20 split** from the labeled training CSV with `random_state=42`.
 
 CSV pixels are scaled to `[0, 1]`. Drawings and uploaded images are converted to a light digit on a dark background, scaled into a 20 × 20 box, and centered in a 28 × 28 frame. The CNN receives a 28 × 28 × 1 tensor per image. The scikit-learn models receive 784 flattened pixel features.
 
-## Recorded model results
+<a name="results"></a>
+
+## 📊 Model Comparison
 
 These percentages come from the project's [model comparison CSV](results/model_comparison.csv). The dashboard uses the CNN, MLP, SVM, and kNN for live predictions. Random Forest and Logistic Regression are included in the notebook comparison. The saved SVM returns a predicted label.
 
@@ -72,7 +94,10 @@ These percentages come from the project's [model comparison CSV](results/model_c
 | Random Forest | 96.39% | 96.39% | 96.39% | 96.39% |
 | Logistic Regression | 91.29% | 91.26% | 91.29% | 91.26% |
 
-## Train and evaluate
+<details>
+<summary><strong>Train models and generate confusion matrices</strong></summary>
+
+### Train and evaluate
 
 With `data/train.csv` in place, run these commands from the project root.
 
@@ -83,9 +108,29 @@ python -m app.ml.evaluate
 
 The training script generates missing model files for the four dashboard classifiers. The evaluation script writes `results/metrics.json`. Refresh **Performance** to view per-digit scores and confusion matrices.
 
-The [notebooks](notebooks/) cover data preprocessing (`01`), training and testing six classifiers (`02`–`07`), and comparing their results (`08`).
+</details>
 
-## Project structure
+<a name="notebooks"></a>
+
+## 📓 Explore the Notebooks
+
+<details>
+<summary><strong>Open the notebook index</strong></summary>
+
+| Notebook | Topic |
+| --- | --- |
+| [01 · Data preprocessing](notebooks/01_data_preprocessing.ipynb) | Explore the data, normalize pixels, and split the labeled examples |
+| [02 · MLP](notebooks/02_MLP.ipynb) | Multilayer perceptron |
+| [03 · CNN](notebooks/03_CNN.ipynb) | Convolutional neural network |
+| [04 · SVM](notebooks/04_SVM.ipynb) | Support vector machine |
+| [05 · kNN](notebooks/05_kNN.ipynb) | k-nearest neighbors |
+| [06 · Random Forest](notebooks/06_Random_Forest.ipynb) | Random forest classifier |
+| [07 · Logistic Regression](notebooks/07_Logistic_Regression.ipynb) | Logistic regression classifier |
+| [08 · Model Comparison](notebooks/08_Model_Comparison.ipynb) | Compare recorded metrics across all six models |
+
+</details>
+
+## 🗂️ Project Structure
 
 | Path | Contents |
 | --- | --- |
