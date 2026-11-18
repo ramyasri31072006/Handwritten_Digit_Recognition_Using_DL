@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+data/*.csv
+models/*.pkl
+models/*.keras
+results/metrics.json
+.ipynb_checkpoints/

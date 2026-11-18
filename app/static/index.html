@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Handwritten Digit Recognition</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <h1>Handwritten digit recognition</h1>
+        <p>Classify digits with your trained MLP, CNN, SVM and kNN models and compare how they perform on the same images.</p>
+      </div>
+      <div class="status" id="status" role="status"><i></i><span>Checking models</span></div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Sections">
+      <button class="tab active" data-view="predict">Predict</button>
+      <button class="tab" data-view="batch">Batch</button>
+      <button class="tab" data-view="performance">Performance</button>
+      <button class="tab" data-view="models">Models</button>
+      <button class="tab" data-view="dataset">Dataset</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Predict -->
+    <section class="view active" id="view-predict">
+      <div class="grid two">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Input</h2>
+            <div class="segmented" id="inputMode" role="tablist">
+              <button class="on" data-mode="draw">Draw</button>
+              <button data-mode="upload">Upload</button>
+              <button data-mode="sample">Samples</button>
+            </div>
+          </div>
+
+          <div class="mode" id="mode-draw">
+            <div class="slate"><canvas id="pad" width="280" height="280" aria-label="Drawing area for one digit"></canvas></div>
+            <div class="row" style="justify-content:center">
+              <label class="inline">Brush <input type="range" id="brush" min="10" max="34" value="20"></label>
+              <button class="btn primary" id="btnPredict">Predict</button>
+              <button class="btn" id="btnClear">Clear</button>
+            </div>
+            <p class="hint" style="text-align:center">Draw one digit, large and centred. Predictions update when you lift the pen.</p>
+          </div>
+
+          <div class="mode hidden" id="mode-upload">
+            <label class="dropzone" id="dropzone">
+              <input type="file" id="imageFile" accept="image/*" hidden>
+              <strong>Choose an image</strong>
+              <span>or drop a PNG or JPG of a single digit here</span>
+            </label>
+            <div class="row">
+              <label class="inline">Background
+                <select id="polarity">
+                  <option value="auto">Detect automatically</option>
+                  <option value="dark">Dark background, light digit</option>
+                  <option value="light">Light background, dark digit</option>
+                </select>
+              </label>
+            </div>
+            <div class="preview-box" id="uploadPreview"></div>
+          </div>
+
+          <div class="mode hidden" id="mode-sample">
+            <div class="sample-grid" id="sampleGrid"></div>
+            <div class="row pager">
+              <button class="btn" id="samplePrev">Previous</button>
+              <span class="kicker" id="samplePage"></span>
+              <button class="btn" id="sampleNext">Next</button>
+            </div>
+            <p class="hint">These images come from your <code>test.csv</code>, which has no labels. Select one to classify it.</p>
+          </div>
+        </div>
+
+        <div class="panel" id="resultPanel">
+          <div class="panel-head"><h2>Prediction</h2></div>
+          <div id="resultEmpty" class="empty">Draw a digit, upload an image or pick a dataset sample. Every loaded model will predict it.</div>
+          <div id="resultError" class="notice error hidden"></div>
+          <div id="resultBody" class="hidden">
+            <div class="headline">
+              <div class="big-digit" id="bigDigit">-</div>
+              <div class="grow">
+                <div class="kicker">Most common prediction</div>
+                <div class="agree" id="agreeText"></div>
+              </div>
+              <div class="seen-wrap">
+                <canvas class="seen" id="seen" width="28" height="28"></canvas>
+                <div class="kicker">28 x 28 input</div>
+              </div>
+            </div>
+            <div class="model-rows" id="modelRows"></div>
+            <div class="subhead">
+              <span>Probability for each digit</span>
+              <select id="probModel" aria-label="Model for probability chart"></select>
+            </div>
+            <div id="probChart" class="hbars"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Batch -->
+    <section class="view" id="view-batch">
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-head"><h2>Batch prediction</h2></div>
+          <p class="panel-note">Run the models on many rows at once, using either your bundled <code>test.csv</code> or a CSV you upload with <code>pixel0</code> to <code>pixel783</code> columns. If the file has a <code>label</code> column, accuracy is calculated too.</p>
+          <div class="form-grid">
+            <label class="field">Data source
+              <select id="batchSource">
+                <option value="bundled">Bundled test.csv</option>
+                <option value="upload">Upload a CSV</option>
+              </select>
+            </label>
+            <label class="field" data-src="bundled">Start at row
+              <input type="number" id="batchStart" min="0" value="0">
+            </label>
+            <label class="field" data-src="bundled">Number of rows
+              <input type="number" id="batchCount" min="1" value="500">
+            </label>
+            <label class="field hidden" data-src="upload">CSV file
+              <input type="file" id="batchFile" accept=".csv,text/csv">
+            </label>
+          </div>
+          <div class="row" style="margin-top:16px">
+            <span class="kicker">Models</span>
+            <div class="row" id="batchModels"></div>
+          </div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="btnBatch">Run batch</button>
+            <span class="kicker" id="batchHint"></span>
+          </div>
+        </div>
+        <div id="batchOut"></div>
+      </div>
+    </section>
+
+    <!-- Performance -->
+    <section class="view" id="view-performance">
+      <div class="stack" id="perfOut"><div class="empty">Loading results</div></div>
+    </section>
+
+    <!-- Models -->
+    <section class="view" id="view-models">
+      <div class="grid cards" id="modelCards"><div class="empty">Loading models</div></div>
+    </section>
+
+    <!-- Dataset -->
+    <section class="view" id="view-dataset">
+      <div class="stack" id="dataOut"><div class="empty">Loading dataset details</div></div>
+    </section>
+  </main>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

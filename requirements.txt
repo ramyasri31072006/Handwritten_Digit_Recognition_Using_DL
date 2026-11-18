@@ -1,0 +1,10 @@
+# Web app + models saved with scikit-learn / joblib
+flask>=3.0
+numpy>=1.26
+pandas>=2.0
+scikit-learn>=1.3
+joblib>=1.3
+pillow>=10.0
+
+# Only needed for the CNN (cnn_digit_model.keras). The other three models work without it.
+tensorflow>=2.16

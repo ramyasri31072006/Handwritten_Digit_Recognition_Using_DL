@@ -1,0 +1,7 @@
+Algorithm,Accuracy,Precision,Recall,F1-Score,Error Rate
+MLP,97.43,97.43,97.43,97.43,2.57
+SVM,97.92,97.92,97.92,97.92,2.08
+KNN,96.77,96.82,96.77,96.77,3.23
+Random Forest,96.39,96.39,96.39,96.39,3.61
+Logistic Regression,91.29,91.26,91.29,91.26,8.71
+CNN,98.31,98.35,98.31,98.31,1.69
